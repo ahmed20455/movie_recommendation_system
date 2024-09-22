@@ -1,15 +1,18 @@
 import pandas as pd
 import streamlit as st
-import pickle
 import requests
+import pickle
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
-
+# Function to fetch movie poster
 def fetch_poster(movie_id):
     response = requests.get('https://api.themoviedb.org/3/movie/{}?api_key=020b311fe0559698373a16008dc6a672&language=en-US'.format(movie_id))
     data = response.json()
     return "https://image.tmdb.org/t/p/w500/" + data['poster_path']
 
 
+# Recommendation function
 def recommend(movie):
     movie_index = movies[movies['title'] == movie].index[0]
     distances = similarity[movie_index]
@@ -23,15 +26,25 @@ def recommend(movie):
         recommended_movies_posters.append(fetch_poster(movie_id))
     return recommended_movies, recommended_movies_posters
 
-
+# Load movie data
 movies_dict = pickle.load(open('movie_dict.pkl', 'rb'))
 movies = pd.DataFrame(movies_dict)
 
-similarity = pickle.load(open('similarity.pkl', 'rb'))
+# Create a CountVectorizer instance
+cv = CountVectorizer(max_features=5000, stop_words='english')
+
+# Assuming new_df is your DataFrame containing movie tags
+new_df = movies[['title', 'tags']]  # Replace 'tags' with your actual column name
+vectors = cv.fit_transform(new_df['tags']).toarray()
+
+# Generate the similarity matrix
+similarity = cosine_similarity(vectors)
+
+# Streamlit UI
 st.title('Movie Recommender System')
 
 selected_movie_name = st.selectbox(
-    'How would you like to be contacted?',
+    'Select a movie:',
     movies['title'].values
 )
 
