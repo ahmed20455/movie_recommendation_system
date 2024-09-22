@@ -4,6 +4,9 @@
 
 The **Movie Recommendation System** is an innovative web application designed to help users discover new films based on their preferences. Utilizing advanced machine learning techniques, this application delivers personalized movie suggestions, enhancing the viewing experience.
 
+## Deployment
+
+The app is deployed on [Movies-Recommendation-System](https://movie-recommendation-systemmrs.streamlit.app/)
 ## 🌟 Key Features
 
 - **Dynamic Recommendations**: Get personalized movie recommendations based on a selected title.
